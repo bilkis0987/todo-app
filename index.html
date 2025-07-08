@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List Interaktif</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Gaya dasar */
+      :root {
+        --warna-utama: #4361ee;
+        --warna-bahaya: #f72585;
+        --warna-sukses: #4cc9f0;
+        --warna-gelap: #212529;
+        --warna-terang: #f8f9fa;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .container {
+        background: white;
+        width: 100%;
+        max-width: 500px;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        transition: transform 0.3s ease;
+      }
+
+      .container:hover {
+        transform: translateY(-5px);
+      }
+
+      h1 {
+        color: var(--warna-gelap);
+        text-align: center;
+        margin-bottom: 20px;
+        position: relative;
+      }
+
+      h1::after {
+        content: "";
+        display: block;
+        width: 60px;
+        height: 4px;
+        background: var(--warna-utama);
+        margin: 10px auto;
+        border-radius: 2px;
+      }
+
+      /* Input & Tombol */
+      .input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      #inputTugas {
+        flex: 1;
+        padding: 12px 15px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+      }
+
+      #inputTugas:focus {
+        outline: none;
+        border-color: var(--warna-utama);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+      }
+
+      #tombolTambah {
+        padding: 12px 20px;
+        background: var(--warna-utama);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      #tombolTambah:hover {
+        background: #3a56d4;
+        transform: translateY(-2px);
+      }
+
+      #tombolTambah:active {
+        transform: translateY(0);
+      }
+
+      /* Daftar Tugas */
+      #daftarTugas {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .tugas-item {
+        background: white;
+        margin-bottom: 10px;
+        padding: 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.3s ease forwards;
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .tugas-item:hover {
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+      }
+
+      .tugas-selesai {
+        text-decoration: line-through;
+        color: #adb5bd;
+      }
+
+      .tugas-text {
+        flex: 1;
+        margin: 0 10px;
+        word-break: break-word;
+      }
+
+      .tugas-aksi {
+        display: flex;
+        gap: 8px;
+      }
+
+      .tombol-aksi {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .tombol-aksi:hover {
+        background: #e9ecef;
+      }
+
+      .tombol-selesai {
+        color: var(--warna-sukses);
+      }
+
+      .tombol-edit {
+        color: var(--warna-utama);
+      }
+
+      .tombol-hapus {
+        color: var(--warna-bahaya);
+      }
+
+      /* Tampilan kosong */
+      .tidak-ada-tugas {
+        text-align: center;
+        color: #adb5bd;
+        padding: 30px 0;
+      }
+
+      .tidak-ada-tugas i {
+        font-size: 50px;
+        margin-bottom: 10px;
+        opacity: 0.7;
+      }
+
+      /* Statistik */
+      .statistik {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+        color: #6c757d;
+        font-size: 14px;
+      }
+
+      /* Responsif */
+      @media (max-width: 600px) {
+        .container {
+          padding: 20px;
+        }
+
+        .input-group {
+          flex-direction: column;
+        }
+
+        #tombolTambah {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>To-Do List</h1>
+
+      <div class="input-group">
+        <input
+          type="text"
+          id="inputTugas"
+          placeholder="Masukkan tugas..."
+          autofocus
+        />
+        <button id="tombolTambah"><i class="fas fa-plus"></i> Tambah</button>
+      </div>
+
+      <ul id="daftarTugas"></ul>
+
+      <div class="statistik">
+        <span id="totalTugas">0 tugas</span>
+        <span id="tugasSelesai">0 selesai</span>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Elemen DOM
+        const inputTugas = document.getElementById("inputTugas");
+        const tombolTambah = document.getElementById("tombolTambah");
+        const daftarTugas = document.getElementById("daftarTugas");
+        const totalTugasEl = document.getElementById("totalTugas");
+        const tugasSelesaiEl = document.getElementById("tugasSelesai");
+
+        // Data Tugas
+        let tugas = [];
+
+        // Muat tugas dari localStorage
+        muatTugas();
+        perbaruiStatistik();
+
+        // Event Listeners
+        tombolTambah.addEventListener("click", tambahTugas);
+        inputTugas.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") tambahTugas();
+        });
+
+        // Fungsi untuk memuat tugas
+        function muatTugas() {
+          const tugasDisimpan = localStorage.getItem("tugas");
+          if (tugasDisimpan) {
+            tugas = JSON.parse(tugasDisimpan);
+            tampilkanTugas();
+          } else {
+            tampilkanKosong();
+          }
+        }
+
+        // Fungsi untuk menyimpan tugas ke localStorage
+        function simpanTugas() {
+          localStorage.setItem("tugas", JSON.stringify(tugas));
+          perbaruiStatistik();
+        }
+
+        // Fungsi untuk menampilkan semua tugas
+        function tampilkanTugas() {
+          daftarTugas.innerHTML = "";
+
+          if (tugas.length === 0) {
+            tampilkanKosong();
+            return;
+          }
+
+          tugas.forEach((tugasItem, index) => {
+            const li = document.createElement("li");
+            li.className = "tugas-item";
+            li.dataset.id = index;
+
+            li.innerHTML = `
+            <div class="tugas-text ${tugasItem.selesai ? "tugas-selesai" : ""}">
+              ${tugasItem.teks}
+            </div>
+            <div class="tugas-aksi">
+              <button class="tombol-aksi tombol-selesai" title="Tandai Selesai">
+                <i class="fas fa-check"></i>
+              </button>
+              <button class="tombol-aksi tombol-edit" title="Edit">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="tombol-aksi tombol-hapus" title="Hapus">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          `;
+
+            // Event listeners untuk aksi
+            const tombolSelesai = li.querySelector(".tombol-selesai");
+            const tombolEdit = li.querySelector(".tombol-edit");
+            const tombolHapus = li.querySelector(".tombol-hapus");
+
+            tombolSelesai.addEventListener("click", () => toggleSelesai(index));
+            tombolEdit.addEventListener("click", () => editTugas(index));
+            tombolHapus.addEventListener("click", () => hapusTugas(index));
+
+            daftarTugas.appendChild(li);
+          });
+        }
+
+        // Fungsi untuk menampilkan pesan kosong
+        function tampilkanKosong() {
+          daftarTugas.innerHTML = `
+          <div class="tidak-ada-tugas">
+            <i class="fas fa-tasks"></i>
+            <p>Tidak ada tugas. Yuk tambahkan!</p>
+          </div>
+        `;
+        }
+
+        // Fungsi untuk menambah tugas baru
+        function tambahTugas() {
+          const teksTugas = inputTugas.value.trim();
+          if (!teksTugas) {
+            alert("Tugas tidak boleh kosong!");
+            return;
+          }
+
+          tugas.push({
+            teks: teksTugas,
+            selesai: false,
+            tanggalDibuat: new Date().toISOString(),
+          });
+
+          inputTugas.value = "";
+          simpanTugas();
+          tampilkanTugas();
+        }
+
+        // Fungsi untuk menandai tugas selesai/belum
+        function toggleSelesai(index) {
+          tugas[index].selesai = !tugas[index].selesai;
+          simpanTugas();
+          tampilkanTugas();
+        }
+
+        // Fungsi untuk mengedit tugas
+        function editTugas(index) {
+          const li = daftarTugas.querySelector(`li[data-id="${index}"]`);
+          const teksTugas = li.querySelector(".tugas-text");
+          const teksSekarang = tugas[index].teks;
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.value = teksSekarang;
+          input.classList.add("input-edit");
+
+          li.replaceChild(input, teksTugas);
+          input.focus();
+
+          function simpanEdit() {
+            const teksBaru = input.value.trim();
+            if (teksBaru && teksBaru !== teksSekarang) {
+              tugas[index].teks = teksBaru;
+              simpanTugas();
+            }
+            tampilkanTugas();
+          }
+
+          input.addEventListener("blur", simpanEdit);
+          input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") simpanEdit();
+          });
+        }
+
+        // Fungsi untuk menghapus tugas
+        function hapusTugas(index) {
+          // Animasi penghapusan
+          const li = daftarTugas.querySelector(`li[data-id="${index}"]`);
+          li.style.transform = "translateX(100%)";
+          li.style.opacity = "0";
+
+          setTimeout(() => {
+            tugas.splice(index, 1);
+            simpanTugas();
+            tampilkanTugas();
+          }, 300);
+        }
+
+        // Fungsi untuk memperbarui statistik
+        function perbaruiStatistik() {
+          const total = tugas.length;
+          const selesai = tugas.filter((t) => t.selesai).length;
+
+          totalTugasEl.textContent = `${total} ${
+            total === 1 ? "tugas" : "tugas"
+          }`;
+          tugasSelesaiEl.textContent = `${selesai} selesai`;
+        }
+      });
+    </script>
+  </body>
+</html>
