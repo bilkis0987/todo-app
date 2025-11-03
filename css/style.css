@@ -1,0 +1,208 @@
+/* Gaya dasar */
+:root {
+  --warna-utama: #4361ee;
+  --warna-bahaya: #f72585;
+  --warna-sukses: #4cc9f0;
+  --warna-gelap: #212529;
+  --warna-terang: #f8f9fa;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  background: white;
+  width: 100%;
+  max-width: 500px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  transition: transform 0.3s ease;
+}
+
+.container:hover {
+  transform: translateY(-5px);
+}
+
+h1 {
+  color: var(--warna-gelap);
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+h1::after {
+  content: "";
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: var(--warna-utama);
+  margin: 10px auto;
+  border-radius: 2px;
+}
+
+/* Input & Tombol */
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#inputTugas {
+  flex: 1;
+  padding: 12px 15px;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+#inputTugas:focus {
+  outline: none;
+  border-color: var(--warna-utama);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+}
+
+#tombolTambah {
+  padding: 12px 20px;
+  background: var(--warna-utama);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#tombolTambah:hover {
+  background: #3a56d4;
+  transform: translateY(-2px);
+}
+
+#tombolTambah:active {
+  transform: translateY(0);
+}
+
+/* Daftar Tugas */
+#daftarTugas {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.tugas-item {
+  background: white;
+  margin-bottom: 10px;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  animation: fadeIn 0.3s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tugas-item:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.tugas-selesai {
+  text-decoration: line-through;
+  color: #adb5bd;
+}
+
+.tugas-text {
+  flex: 1;
+  margin: 0 10px;
+  word-break: break-word;
+}
+
+.tugas-aksi {
+  display: flex;
+  gap: 8px;
+}
+
+.tombol-aksi {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tombol-aksi:hover {
+  background: #e9ecef;
+}
+
+.tombol-selesai {
+  color: var(--warna-sukses);
+}
+
+.tombol-edit {
+  color: var(--warna-utama);
+}
+
+.tombol-hapus {
+  color: var(--warna-bahaya);
+}
+
+/* Tampilan kosong */
+.tidak-ada-tugas {
+  text-align: center;
+  color: #adb5bd;
+  padding: 30px 0;
+}
+
+.tidak-ada-tugas i {
+  font-size: 50px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+
+/* Statistik */
+.statistik {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* Responsif */
+@media (max-width: 600px) {
+  .container {
+    padding: 20px;
+  }
+
+  .input-group {
+    flex-direction: column;
+  }
+
+  #tombolTambah {
+    width: 100%;
+  }
+}
